@@ -299,7 +299,11 @@ class Api extends Trongate {
         if (defined('CORS_ALLOWED_ORIGINS') && CORS_ALLOWED_ORIGINS !== '') {
             if (CORS_ALLOWED_ORIGINS === '*') {
                 // header('Access-Control-Allow-Origin: *');
-                header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+                $origin = $_SERVER['HTTP_REFERER']
+                    ?? $_SERVER['HTTP_ORIGIN']
+                    ?? gethostname()
+                    ?: '*';
+                header('Access-Control-Allow-Origin: ' . $origin);
             } else {
                 header('Access-Control-Allow-Origin: ' . CORS_ALLOWED_ORIGINS);
             }
