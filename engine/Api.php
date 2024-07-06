@@ -7,6 +7,10 @@ class Api extends Trongate {
     
     public function __construct() {
         parent::__construct();
+
+        if (defined('CORS_ENABLED') && CORS_ENABLED === true) {
+            $this->_define_cors_headers();
+        }
     }
 
     /**
@@ -288,6 +292,30 @@ class Api extends Trongate {
         $settings = file_get_contents($file_path);
         $endpoints = json_decode($settings, true);
         return $endpoints;
+    }
+
+    private function _define_cors_headers(): void
+    {
+        if (defined('CORS_ALLOWED_ORIGINS') && CORS_ALLOWED_ORIGINS !== '') {
+            if (CORS_ALLOWED_ORIGINS === '*') {
+                // header('Access-Control-Allow-Origin: *');
+                header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+            } else {
+                header('Access-Control-Allow-Origin: ' . CORS_ALLOWED_ORIGINS);
+            }
+        }
+
+        if (defined('CORS_ALLOWED_METHODS') && CORS_ALLOWED_METHODS !== '') {
+            header('Access-Control-Allow-Methods: ' . CORS_ALLOWED_METHODS);
+        }
+
+        if (defined('CORS_ALLOWED_HEADERS') && CORS_ALLOWED_HEADERS !== '') {
+            header('Access-Control-Allow-Headers: ' . CORS_ALLOWED_HEADERS);
+        }
+
+        if (defined('CORS_ALLOWED_CREDENTIALS')) {
+            header('Access-Control-Allow-Credentials: ' . CORS_ALLOWED_CREDENTIALS ? 'true' : 'false');
+        }
     }
 
 }
